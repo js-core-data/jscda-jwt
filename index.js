@@ -21,10 +21,5 @@ const getToken = async req => {
 };
 
 module.exports = app => {
-  app.use((req, res, next) => {
-    req.getJWT = () => {
-      return getToken(req);
-    };
-    next();
-  });
+  app.locals.getJWT = getToken;
 };

@@ -10,8 +10,8 @@ const api = express();
 jwtMiddleware(api);
 
 api.get("/test", (req, res, next) => {
-  req
-    .getJWT()
+  api.locals
+    .getJWT(req)
     .then(result => {
       res.send(result);
     })
