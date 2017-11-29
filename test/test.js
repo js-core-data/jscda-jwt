@@ -7,7 +7,7 @@ const app = require("js-core-data-app")();
 const jwtMiddleware = require("../");
 
 const api = express();
-api.use(jwtMiddleware(app.database));
+jwtMiddleware(api);
 
 api.get("/test", (req, res, next) => {
   req

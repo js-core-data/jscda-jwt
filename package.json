@@ -14,7 +14,7 @@
     "jsonwebtoken": "^8.1.0"
   },
   "devDependencies": {
-    "js-core-data-app": "^0.1.4",
+    "js-core-data-app": "^0.2.0",
     "mocha": "^4.0.1",
     "sqlite3": "^3.1.13",
     "supertest": "^3.0.0"

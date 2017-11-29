@@ -20,15 +20,11 @@ const getToken = async req => {
   }
 };
 
-module.exports = database => {
-  let app = new Router();
-
+module.exports = app => {
   app.use((req, res, next) => {
     req.getJWT = () => {
       return getToken(req);
     };
     next();
   });
-
-  return app;
 };
