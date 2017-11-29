@@ -1,19 +1,20 @@
 {
-  "name": "jscda-rest-api",
-  "description": "Rest api plugin for js-core-data-app",
-  "version": "0.0.5",
+  "name": "jscda-jwt",
+  "description": "JWT plugin for js-core-data-app",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/js-core-data-app/jscda-rest-api.git"
+    "url": "https://github.com/js-core-data-app/jscda-jwt.git"
   },
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "bluebird": "^3.5.1",
     "express": "^4.16.2",
-    "js-core-data-rest": "^0.1.1"
+    "http-errors": "^1.6.2",
+    "jsonwebtoken": "^8.1.0"
   },
   "devDependencies": {
-    "js-core-data-app": "^0.1.0",
+    "js-core-data-app": "^0.1.4",
     "mocha": "^4.0.1",
     "sqlite3": "^3.1.13",
     "supertest": "^3.0.0"
