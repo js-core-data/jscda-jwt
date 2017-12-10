@@ -20,6 +20,38 @@ const getToken = async req => {
   }
 };
 
+const checkJWTPermissions = async (req, resource) => {
+  let info = await req.app.locals.getJWT(req);
+  if (!info.permissions && !info.user) {
+    return false;
+  }
+
+  let permissions = info.permissions || info.user.permissions;
+
+  if (!permissions) {
+    return false;
+  }
+
+  permissions = permissions.split("\n");
+
+  let valid = false;
+  for (let permission of permissions) {
+    let [_rule, _resource] = permission.split("|");
+    if (!_rule || !_resource) continue;
+    let regepx = new RegExp("^" + _resource.replace(/\*/g, ".*") + "$");
+    if (regepx.test(resource)) {
+      if (_rule == "deny") {
+        return false;
+      } else {
+        valid = true;
+      }
+    }
+  }
+
+  return valid;
+};
+
 module.exports = app => {
   app.locals.getJWT = getToken;
+  app.locals.checkJWTPermissions = checkJWTPermissions;
 };

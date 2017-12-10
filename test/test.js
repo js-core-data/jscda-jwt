@@ -2,6 +2,7 @@ const assert = require("assert");
 const supertest = require("supertest");
 const express = require("express");
 const createError = require("http-errors");
+const jwt = require("jsonwebtoken");
 
 const app = require("js-core-data-app")();
 const jwtMiddleware = require("../");
@@ -18,15 +19,33 @@ api.get("/test", (req, res, next) => {
     .catch(next);
 });
 
+api.get("/validate", (req, res, next) => {
+  api.locals
+    .checkJWTPermissions(req, req.query.resource)
+    .then(result => {
+      res.send({ result: result });
+    })
+    .catch(next);
+});
+
 api.use((err, req, res, next) => {
   res.status(err.statusCode || 400).send(err.message);
 });
 
 const test = supertest(api);
 
+const payload = {
+  user: {
+    username: "admin@example.com",
+    firstname: "John",
+    lastname: "Doe"
+  },
+  permissions: "allow|*\ndeny|blah\ndeny|test*:a*",
+  iat: 1511923424
+};
+
 const tokens = {
-  valid:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UifSwiaWF0IjoxNTExOTIzNDI0fQ.upp30Okt4I1vjw90UXKRg1SnpZQreGYK90s3Crfjh_g"
+  valid: jwt.sign(payload, "JWT_SECRET")
 };
 
 describe("jwt", () => {
@@ -52,5 +71,43 @@ describe("jwt", () => {
 
   it("should fail to accept missing access token", () => {
     return test.get(`/test`).expect(401);
+  });
+
+  describe("permissions validation", () => {
+    it("should validate foo", () => {
+      return test
+        .get(`/validate?resource=foo&access_token=${tokens.valid}`)
+        .expect(200)
+        .expect(res => {
+          assert.equal(res.body.result, true);
+        });
+    });
+
+    it("should validate test:bbb", () => {
+      return test
+        .get(`/validate?resource=test:bbb&access_token=${tokens.valid}`)
+        .expect(200)
+        .expect(res => {
+          assert.equal(res.body.result, true);
+        });
+    });
+
+    it("should not validate blah", () => {
+      return test
+        .get(`/validate?resource=blah&access_token=${tokens.valid}`)
+        .expect(200)
+        .expect(res => {
+          assert.equal(res.body.result, false);
+        });
+    });
+
+    it("should not validate test:aaa", () => {
+      return test
+        .get(`/validate?resource=test:aaa&access_token=${tokens.valid}`)
+        .expect(200)
+        .expect(res => {
+          assert.equal(res.body.result, false);
+        });
+    });
   });
 });
