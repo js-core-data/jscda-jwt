@@ -23,7 +23,7 @@ module.exports = app => {
 
     // validate token permissions
     app.use((req, res, next) => {
-        api.locals
+        app.locals
             .checkJWTPermissions(req, 'resource_name_to_validate')
             .then(result => {
                 if (!result) {
