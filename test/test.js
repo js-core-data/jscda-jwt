@@ -4,7 +4,7 @@ const express = require("express");
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
-const app = require("js-core-data-app")();
+const app = require("nappjs")();
 const jwtMiddleware = require("../");
 
 const api = express();

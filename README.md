@@ -1,12 +1,12 @@
-# jscda-jwt
+# nappjs-jwt
 
-JWT plugin for js-core-data-app
+JWT plugin for nappjs
 
-[![Build Status](https://travis-ci.org/js-core-data/jscda-jwt.svg?branch=master)](https://travis-ci.org/js-core-data/jscda-jwt)
+[![Build Status](https://travis-ci.org/nappjs/nappjs-jwt.svg?branch=master)](https://travis-ci.org/nappjs/nappjs-jwt)
 
 # Example
 
-For js-core-data-app middleware
+For nappjs middleware
 
 ```
 module.exports = app => {

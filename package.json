@@ -1,11 +1,11 @@
 {
-  "name": "jscda-jwt",
-  "description": "JWT plugin for js-core-data-app",
+  "name": "nappjs-jwt",
+  "description": "JWT plugin for nappjs",
   "version": "0.0.7",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/js-core-data-app/jscda-jwt.git"
+    "url": "https://github.com/nappjs/nappjs-jwt.git"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -14,8 +14,8 @@
     "jsonwebtoken": "^8.1.0"
   },
   "devDependencies": {
-    "js-core-data-app": "^0.2.0",
     "mocha": "^4.0.1",
+    "nappjs": "^0.3.0",
     "sqlite3": "^3.1.13",
     "supertest": "^3.0.0"
   },
