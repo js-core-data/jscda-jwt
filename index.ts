@@ -6,7 +6,7 @@ import { NappJSService } from 'nappjs'
 
 const JWT_SECRET = process.env.JWT_SECRET || "JWT_SECRET";
 
-export class NappJSJWT extends NappJSService {
+export default class NappJSJWT extends NappJSService {
   async getToken(req) {
     let token = req.query.access_token || req.headers.authorization;
   

@@ -120,5 +120,5 @@ var NappJSJWT = (function (_super) {
     ;
     return NappJSJWT;
 }(nappjs_1.NappJSService));
-exports.NappJSJWT = NappJSJWT;
+exports.default = NappJSJWT;
 //# sourceMappingURL=index.js.map
