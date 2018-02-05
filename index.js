@@ -47,9 +47,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var createError = require("http-errors");
 var bluebird = require("bluebird");
+var node_fetch_1 = require("node-fetch");
 var jwt = bluebird.promisifyAll(require("jsonwebtoken"));
 var nappjs_1 = require("nappjs");
-var JWT_SECRET = process.env.JWT_SECRET || "JWT_SECRET";
 var NappJSJWT = (function (_super) {
     __extends(NappJSJWT, _super);
     function NappJSJWT() {
@@ -57,7 +57,7 @@ var NappJSJWT = (function (_super) {
     }
     NappJSJWT.prototype.getToken = function (req) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, e_1;
+            var token, configs, latestError, _i, configs_1, config, res, e_1, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -68,18 +68,42 @@ var NappJSJWT = (function (_super) {
                         token = token.replace("Bearer ", "");
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4, jwt.verifyAsync(token, JWT_SECRET)];
-                    case 2: return [2, _a.sent()];
+                        _a.trys.push([1, 9, , 10]);
+                        return [4, this.getConfigs()];
+                    case 2:
+                        configs = _a.sent();
+                        if (configs.length == 0) {
+                            throw new Error("invalid environment cofiguration");
+                        }
+                        latestError = null;
+                        _i = 0, configs_1 = configs;
+                        _a.label = 3;
                     case 3:
+                        if (!(_i < configs_1.length)) return [3, 8];
+                        config = configs_1[_i];
+                        _a.label = 4;
+                    case 4:
+                        _a.trys.push([4, 6, , 7]);
+                        return [4, jwt.verifyAsync(token, config.secret, config.options)];
+                    case 5:
+                        res = _a.sent();
+                        return [2, res];
+                    case 6:
                         e_1 = _a.sent();
-                        throw createError(401, e_1.message);
-                    case 4: return [2];
+                        latestError = e_1;
+                        return [3, 7];
+                    case 7:
+                        _i++;
+                        return [3, 3];
+                    case 8: throw latestError;
+                    case 9:
+                        e_2 = _a.sent();
+                        throw createError(401, e_2.message);
+                    case 10: return [2];
                 }
             });
         });
     };
-    ;
     NappJSJWT.prototype.checkJWTPermissions = function (req, resource) {
         return __awaiter(this, void 0, void 0, function () {
             var info, permissions, valid, _i, permissions_1, permission, _a, _rule, _resource, regepx;
@@ -117,7 +141,41 @@ var NappJSJWT = (function (_super) {
             });
         });
     };
-    ;
+    NappJSJWT.prototype.getConfigs = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var configs, JWT_SECRET, JWT_CERTS_URL, JWT_PUBLIC_CERT, res, content;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        configs = [];
+                        JWT_SECRET = process.env.JWT_SECRET;
+                        JWT_CERTS_URL = process.env.JWT_CERTS_URL;
+                        JWT_PUBLIC_CERT = process.env.JWT_PUBLIC_CERT;
+                        if (typeof JWT_SECRET !== "undefined") {
+                            configs.push({ secret: JWT_SECRET, options: { algorhitm: "HS256" } });
+                        }
+                        if (typeof JWT_PUBLIC_CERT !== "undefined") {
+                            configs.push({
+                                secret: JWT_PUBLIC_CERT,
+                                options: { algorhitm: "RS256" }
+                            });
+                        }
+                        if (!(typeof JWT_CERTS_URL !== "undefined")) return [3, 3];
+                        return [4, node_fetch_1.default(JWT_CERTS_URL)];
+                    case 1:
+                        res = _a.sent();
+                        return [4, res.json()];
+                    case 2:
+                        content = _a.sent();
+                        configs.push(content.map(function (cert) {
+                            return { secret: cert.key, options: { algorhitm: "RS256" } };
+                        }));
+                        _a.label = 3;
+                    case 3: return [2, configs];
+                }
+            });
+        });
+    };
     return NappJSJWT;
 }(nappjs_1.NappJSService));
 exports.default = NappJSJWT;

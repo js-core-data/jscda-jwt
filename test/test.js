@@ -3,8 +3,10 @@ const assert = require("assert");
 // const express = require("express");
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
+const selfsigned = require("selfsigned");
 
-const NappJSJWT = require("../").NappJSJWT;
+const NappJSJWT = require("../").default;
+
 // const app = require("nappjs").NewNappJS();
 // const jwtMiddleware = require("../");
 
@@ -47,9 +49,15 @@ const payload = {
   iat: 1511923424
 };
 
+const cert = selfsigned.generate();
+
 const tokens = {
-  valid: jwt.sign(payload, "JWT_SECRET")
+  valid: jwt.sign(payload, "JWT_SECRET", { algorithm: "HS256" }),
+  cert: jwt.sign(payload, cert.private, { algorithm: "RS256" })
 };
+
+process.env.JWT_SECRET = "JWT_SECRET";
+process.env.JWT_PUBLIC_CERT = cert.public;
 
 describe("jwt", () => {
   // after(() => {
@@ -60,6 +68,19 @@ describe("jwt", () => {
     let fakeReq = {
       query: {},
       headers: { authorization: `Bearer ${tokens.valid}` }
+    };
+    let token = await service.getToken(fakeReq);
+    assert.ok(token);
+    assert.ok(token.iat);
+    assert.equal(token.user.username, "admin@example.com");
+    assert.equal(token.user.firstname, "John");
+    assert.equal(token.user.lastname, "Doe");
+  });
+
+  it("should accept valid access token from certificate", async () => {
+    let fakeReq = {
+      query: {},
+      headers: { authorization: `Bearer ${tokens.cert}` }
     };
     let token = await service.getToken(fakeReq);
     assert.ok(token.iat);

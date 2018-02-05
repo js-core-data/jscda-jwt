@@ -1,5 +1,6 @@
-import { NappJSService } from 'nappjs';
+import { NappJSService } from "nappjs";
 export default class NappJSJWT extends NappJSService {
     getToken(req: any): Promise<any>;
     checkJWTPermissions(req: any, resource: any): Promise<boolean>;
+    private getConfigs();
 }
