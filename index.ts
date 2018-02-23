@@ -12,6 +12,13 @@ interface JWTConfig {
 
 export default class NappJSJWT extends NappJSService {
   public async getToken(req) {
+    if (!await this.isEnabled()) {
+      return null;
+    }
+
+    if (req.jwt) {
+      return req.jwt_cache;
+    }
     let token = req.query.access_token || req.headers.authorization;
 
     if (!token) {
@@ -30,6 +37,7 @@ export default class NappJSJWT extends NappJSService {
       for (let config of configs) {
         try {
           let res = await jwt.verifyAsync(token, config.secret, config.options);
+          req.jwt_cache = res;
           return res;
         } catch (e) {
           latestError = e;
@@ -41,8 +49,13 @@ export default class NappJSJWT extends NappJSService {
     }
   }
 
-  public async checkJWTPermissions(req, resource) {
+  public async checkJWTPermissions(req, resource): Promise<Boolean> {
+    if (!await this.isEnabled()) {
+      return true;
+    }
+
     let info = await this.getToken(req);
+
     if (!info.permissions && !info.user) {
       return false;
     }
@@ -70,6 +83,11 @@ export default class NappJSJWT extends NappJSService {
     }
 
     return valid;
+  }
+
+  private async isEnabled(): Promise<Boolean> {
+    let configs = await this.getConfigs();
+    return configs.length > 0;
   }
 
   private async getConfigs(): Promise<JWTConfig[]> {

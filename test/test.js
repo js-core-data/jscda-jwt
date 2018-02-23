@@ -7,37 +7,7 @@ const selfsigned = require("selfsigned");
 
 const NappJSJWT = require("../").default;
 
-// const app = require("nappjs").NewNappJS();
-// const jwtMiddleware = require("../");
-
-// const api = express();
-// jwtMiddleware(api);
-
-// api.get("/test", (req, res, next) => {
-//   api.locals
-//     .getJWT(req)
-//     .then(result => {
-//       res.send(result);
-//     })
-//     .catch(next);
-// });
-
-// api.get("/validate", (req, res, next) => {
-//   api.locals
-//     .checkJWTPermissions(req, req.query.resource)
-//     .then(result => {
-//       res.send({ result: result });
-//     })
-//     .catch(next);
-// });
-
-// api.use((err, req, res, next) => {
-//   res.status(err.statusCode || 400).send(err.message);
-// });
-
 const service = new NappJSJWT();
-
-// const test = supertest(api);
 
 const payload = {
   user: {

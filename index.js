@@ -60,46 +60,54 @@ var NappJSJWT = (function (_super) {
             var token, configs, latestError, _i, configs_1, config, res, e_1, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4, this.isEnabled()];
+                    case 1:
+                        if (!(_a.sent())) {
+                            return [2, null];
+                        }
+                        if (req.jwt) {
+                            return [2, req.jwt_cache];
+                        }
                         token = req.query.access_token || req.headers.authorization;
                         if (!token) {
                             throw createError(401, "access token missing");
                         }
                         token = token.replace("Bearer ", "");
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 9, , 10]);
-                        return [4, this.getConfigs()];
+                        _a.label = 2;
                     case 2:
+                        _a.trys.push([2, 10, , 11]);
+                        return [4, this.getConfigs()];
+                    case 3:
                         configs = _a.sent();
                         if (configs.length == 0) {
                             throw new Error("invalid environment cofiguration");
                         }
                         latestError = null;
                         _i = 0, configs_1 = configs;
-                        _a.label = 3;
-                    case 3:
-                        if (!(_i < configs_1.length)) return [3, 8];
-                        config = configs_1[_i];
                         _a.label = 4;
                     case 4:
-                        _a.trys.push([4, 6, , 7]);
-                        return [4, jwt.verifyAsync(token, config.secret, config.options)];
+                        if (!(_i < configs_1.length)) return [3, 9];
+                        config = configs_1[_i];
+                        _a.label = 5;
                     case 5:
-                        res = _a.sent();
-                        return [2, res];
+                        _a.trys.push([5, 7, , 8]);
+                        return [4, jwt.verifyAsync(token, config.secret, config.options)];
                     case 6:
+                        res = _a.sent();
+                        req.jwt_cache = res;
+                        return [2, res];
+                    case 7:
                         e_1 = _a.sent();
                         latestError = e_1;
-                        return [3, 7];
-                    case 7:
+                        return [3, 8];
+                    case 8:
                         _i++;
-                        return [3, 3];
-                    case 8: throw latestError;
-                    case 9:
+                        return [3, 4];
+                    case 9: throw latestError;
+                    case 10:
                         e_2 = _a.sent();
                         throw createError(401, e_2.message);
-                    case 10: return [2];
+                    case 11: return [2];
                 }
             });
         });
@@ -109,8 +117,13 @@ var NappJSJWT = (function (_super) {
             var info, permissions, valid, _i, permissions_1, permission, _a, _rule, _resource, regepx;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4, this.getToken(req)];
+                    case 0: return [4, this.isEnabled()];
                     case 1:
+                        if (!(_b.sent())) {
+                            return [2, true];
+                        }
+                        return [4, this.getToken(req)];
+                    case 2:
                         info = _b.sent();
                         if (!info.permissions && !info.user) {
                             return [2, false];
@@ -137,6 +150,19 @@ var NappJSJWT = (function (_super) {
                             }
                         }
                         return [2, valid];
+                }
+            });
+        });
+    };
+    NappJSJWT.prototype.isEnabled = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var configs;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConfigs()];
+                    case 1:
+                        configs = _a.sent();
+                        return [2, configs.length > 0];
                 }
             });
         });
