@@ -105,7 +105,7 @@ export default class NappJSJWT extends NappJSService {
     if (typeof JWT_CERTS_URL !== "undefined") {
       let res = await fetch(JWT_CERTS_URL);
       let content = await res.json();
-      configs.push(
+      configs = configs.concat(
         content.map(cert => {
           return { secret: cert.key, options: { algorhitm: "RS256" } };
         })

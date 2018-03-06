@@ -190,7 +190,7 @@ var NappJSJWT = (function (_super) {
                         return [4, res.json()];
                     case 2:
                         content = _a.sent();
-                        configs.push(content.map(function (cert) {
+                        configs = configs.concat(content.map(function (cert) {
                             return { secret: cert.key, options: { algorhitm: "RS256" } };
                         }));
                         _a.label = 3;
