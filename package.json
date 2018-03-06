@@ -1,7 +1,7 @@
 {
   "name": "nappjs-jwt",
   "description": "JWT plugin for nappjs",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "MIT",
   "repository": {
     "type": "git",
