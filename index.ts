@@ -10,13 +10,15 @@ interface JWTConfig {
   options: { [key: string]: any };
 }
 
+let _configsCache: JWTConfig[] | null = null;
+
 export default class NappJSJWT extends NappJSService {
   public async getToken(req) {
     if (!await this.isEnabled()) {
       return null;
     }
 
-    if (req.jwt) {
+    if (req.jwt_cache) {
       return req.jwt_cache;
     }
     let token = req.query.access_token || req.headers.authorization;
@@ -87,6 +89,9 @@ export default class NappJSJWT extends NappJSService {
   }
 
   private async getConfigs(): Promise<JWTConfig[]> {
+    if (_configsCache) {
+      return _configsCache;
+    }
     let configs: JWTConfig[] = [];
 
     const JWT_SECRET = process.env.JWT_SECRET;
@@ -115,6 +120,7 @@ export default class NappJSJWT extends NappJSService {
       );
     }
 
+    _configsCache = configs;
     return configs;
   }
 }

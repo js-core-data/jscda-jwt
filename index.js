@@ -50,6 +50,7 @@ var bluebird = require("bluebird");
 var node_fetch_1 = require("node-fetch");
 var jwt = bluebird.promisifyAll(require("jsonwebtoken"));
 var nappjs_1 = require("nappjs");
+var _configsCache = null;
 var NappJSJWT = (function (_super) {
     __extends(NappJSJWT, _super);
     function NappJSJWT() {
@@ -65,7 +66,7 @@ var NappJSJWT = (function (_super) {
                         if (!(_a.sent())) {
                             return [2, null];
                         }
-                        if (req.jwt) {
+                        if (req.jwt_cache) {
                             return [2, req.jwt_cache];
                         }
                         token = req.query.access_token || req.headers.authorization;
@@ -170,6 +171,9 @@ var NappJSJWT = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (_configsCache) {
+                            return [2, _configsCache];
+                        }
                         configs = [];
                         JWT_SECRET = process.env.JWT_SECRET;
                         JWT_CERTS_URL = process.env.JWT_CERTS_URL;
@@ -197,7 +201,9 @@ var NappJSJWT = (function (_super) {
                             };
                         }));
                         _a.label = 3;
-                    case 3: return [2, configs];
+                    case 3:
+                        _configsCache = configs;
+                        return [2, configs];
                 }
             });
         });
