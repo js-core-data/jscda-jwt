@@ -79,9 +79,6 @@ var NappJSJWT = (function (_super) {
                         return [4, this.getConfigs()];
                     case 3:
                         configs = _a.sent();
-                        if (configs.length == 0) {
-                            throw new Error("invalid environment cofiguration");
-                        }
                         latestError = null;
                         _i = 0, configs_1 = configs;
                         _a.label = 4;

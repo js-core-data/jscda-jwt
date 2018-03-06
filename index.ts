@@ -29,10 +29,6 @@ export default class NappJSJWT extends NappJSService {
     try {
       let configs = await this.getConfigs();
 
-      if (configs.length == 0) {
-        throw new Error("invalid environment cofiguration");
-      }
-
       let latestError = null;
       for (let config of configs) {
         try {
