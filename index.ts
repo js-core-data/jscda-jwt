@@ -107,7 +107,10 @@ export default class NappJSJWT extends NappJSService {
       let content = await res.json();
       configs = configs.concat(
         content.map(cert => {
-          return { secret: cert.key, options: { algorhitm: "RS256" } };
+          return {
+            secret: new Buffer(cert.key, "base64"),
+            options: { algorhitm: "RS256" }
+          };
         })
       );
     }

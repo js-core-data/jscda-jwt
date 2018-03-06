@@ -191,7 +191,10 @@ var NappJSJWT = (function (_super) {
                     case 2:
                         content = _a.sent();
                         configs = configs.concat(content.map(function (cert) {
-                            return { secret: cert.key, options: { algorhitm: "RS256" } };
+                            return {
+                                secret: new Buffer(cert.key, "base64"),
+                                options: { algorhitm: "RS256" }
+                            };
                         }));
                         _a.label = 3;
                     case 3: return [2, configs];
