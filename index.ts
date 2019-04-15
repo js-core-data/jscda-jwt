@@ -21,7 +21,7 @@ export default class NappJSJWT extends NappJSService {
     }
     let token = req.query.access_token || req.headers.authorization;
 
-    if (!token) {
+    if (!token && (await this.isEnabled())) {
       throw createError(401, 'access token missing');
     }
 

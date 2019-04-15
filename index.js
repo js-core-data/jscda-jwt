@@ -62,61 +62,68 @@ var NappJSJWT = (function (_super) {
     NappJSJWT.prototype.getToken = function (req, verify) {
         if (verify === void 0) { verify = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var token, configs, latestError, _i, configs_1, config, res, e_1, e_2, res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var token, _a, configs, latestError, _i, configs_1, config, res, e_1, e_2, res;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (req.jwt_cache) {
                             return [2, req.jwt_cache];
                         }
                         token = req.query.access_token || req.headers.authorization;
-                        if (!token) {
+                        _a = !token;
+                        if (!_a) return [3, 2];
+                        return [4, this.isEnabled()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        if (_a) {
                             throw createError(401, 'access token missing');
                         }
                         token = token.replace('Bearer ', '');
-                        if (!verify) return [3, 12];
+                        if (!verify) return [3, 14];
                         return [4, this.isEnabled()];
-                    case 1:
-                        if (!(_a.sent())) {
+                    case 3:
+                        if (!(_b.sent())) {
                             return [2, null];
                         }
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 10, , 11]);
+                        _b.label = 4;
+                    case 4:
+                        _b.trys.push([4, 12, , 13]);
                         return [4, this.getConfigs()];
-                    case 3:
-                        configs = _a.sent();
+                    case 5:
+                        configs = _b.sent();
                         latestError = null;
                         _i = 0, configs_1 = configs;
-                        _a.label = 4;
-                    case 4:
-                        if (!(_i < configs_1.length)) return [3, 9];
-                        config = configs_1[_i];
-                        _a.label = 5;
-                    case 5:
-                        _a.trys.push([5, 7, , 8]);
-                        return [4, jwt.verifyAsync(token, config.secret, config.options)];
+                        _b.label = 6;
                     case 6:
-                        res = _a.sent();
+                        if (!(_i < configs_1.length)) return [3, 11];
+                        config = configs_1[_i];
+                        _b.label = 7;
+                    case 7:
+                        _b.trys.push([7, 9, , 10]);
+                        return [4, jwt.verifyAsync(token, config.secret, config.options)];
+                    case 8:
+                        res = _b.sent();
                         req.jwt_cache = res;
                         return [2, res];
-                    case 7:
-                        e_1 = _a.sent();
+                    case 9:
+                        e_1 = _b.sent();
                         latestError = e_1;
-                        return [3, 8];
-                    case 8:
-                        _i++;
-                        return [3, 4];
-                    case 9: throw latestError;
+                        return [3, 10];
                     case 10:
-                        e_2 = _a.sent();
+                        _i++;
+                        return [3, 6];
+                    case 11: throw latestError;
+                    case 12:
+                        e_2 = _b.sent();
                         throw createError(401, e_2.message);
-                    case 11: return [3, 14];
-                    case 12: return [4, jwt.decode(token)];
-                    case 13:
-                        res = _a.sent();
+                    case 13: return [3, 16];
+                    case 14: return [4, jwt.decode(token)];
+                    case 15:
+                        res = _b.sent();
                         return [2, res];
-                    case 14: return [2];
+                    case 16: return [2];
                 }
             });
         });
