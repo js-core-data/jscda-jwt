@@ -23,9 +23,10 @@ export default class NappJSJWT extends NappJSService {
 
     if (!token && (await this.isEnabled())) {
       throw createError(401, 'access token missing');
+    } else {
+      token = token.replace('Bearer ', '');
     }
 
-    token = token.replace('Bearer ', '');
     if (verify) {
       if (!(await this.isEnabled())) {
         return null;
