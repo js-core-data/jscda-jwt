@@ -80,7 +80,7 @@ var NappJSJWT = (function (_super) {
                         if (_a) {
                             throw createError(401, 'access token missing');
                         }
-                        else {
+                        else if (token) {
                             token = token.replace('Bearer ', '');
                         }
                         if (!verify) return [3, 14];
