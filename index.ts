@@ -16,10 +16,6 @@ let _configsCache: JWTConfig[] | null = null;
 
 export default class NappJSJWT extends NappJSService {
   public async getToken(req, verify = true) {
-    if (!(await this.isEnabled())) {
-      return null;
-    }
-
     if (req.jwt_cache) {
       return req.jwt_cache;
     }
@@ -31,6 +27,10 @@ export default class NappJSJWT extends NappJSService {
 
     token = token.replace('Bearer ', '');
     if (verify) {
+      if (!(await this.isEnabled())) {
+        return null;
+      }
+
       try {
         let configs = await this.getConfigs();
 

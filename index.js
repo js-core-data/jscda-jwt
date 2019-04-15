@@ -48,35 +48,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var createError = require("http-errors");
+var createError = require('http-errors');
 var bluebird = require("bluebird");
-var node_fetch_1 = require("node-fetch");
-var jwt = bluebird.promisifyAll(require("jsonwebtoken"));
 var nappjs_1 = require("nappjs");
+var node_fetch_1 = require("node-fetch");
+var jwt = bluebird.promisifyAll(require('jsonwebtoken'));
 var _configsCache = null;
 var NappJSJWT = (function (_super) {
     __extends(NappJSJWT, _super);
     function NappJSJWT() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NappJSJWT.prototype.getToken = function (req) {
+    NappJSJWT.prototype.getToken = function (req, verify) {
+        if (verify === void 0) { verify = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var token, configs, latestError, _i, configs_1, config, res, e_1, e_2;
+            var token, configs, latestError, _i, configs_1, config, res, e_1, e_2, res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.isEnabled()];
-                    case 1:
-                        if (!(_a.sent())) {
-                            return [2, null];
-                        }
+                    case 0:
                         if (req.jwt_cache) {
                             return [2, req.jwt_cache];
                         }
                         token = req.query.access_token || req.headers.authorization;
                         if (!token) {
-                            throw createError(401, "access token missing");
+                            throw createError(401, 'access token missing');
                         }
-                        token = token.replace("Bearer ", "");
+                        token = token.replace('Bearer ', '');
+                        if (!verify) return [3, 12];
+                        return [4, this.isEnabled()];
+                    case 1:
+                        if (!(_a.sent())) {
+                            return [2, null];
+                        }
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 10, , 11]);
@@ -108,7 +111,12 @@ var NappJSJWT = (function (_super) {
                     case 10:
                         e_2 = _a.sent();
                         throw createError(401, e_2.message);
-                    case 11: return [2];
+                    case 11: return [3, 14];
+                    case 12: return [4, jwt.decode(token)];
+                    case 13:
+                        res = _a.sent();
+                        return [2, res];
+                    case 14: return [2];
                 }
             });
         });
@@ -133,16 +141,16 @@ var NappJSJWT = (function (_super) {
                         if (!permissions) {
                             return [2, false];
                         }
-                        permissions = permissions.split("\n");
+                        permissions = permissions.split('\n');
                         valid = false;
                         for (_i = 0, permissions_1 = permissions; _i < permissions_1.length; _i++) {
                             permission = permissions_1[_i];
-                            _a = permission.split("|"), _rule = _a[0], _resource = _a[1];
+                            _a = permission.split('|'), _rule = _a[0], _resource = _a[1];
                             if (!_rule || !_resource)
                                 continue;
-                            regepx = new RegExp("^" + _resource.replace(/\*/g, ".*") + "$");
+                            regepx = new RegExp('^' + _resource.replace(/\*/g, '.*') + '$');
                             if (regepx.test(resource)) {
-                                if (_rule == "deny") {
+                                if (_rule == 'deny') {
                                     return [2, false];
                                 }
                                 else {
@@ -181,16 +189,16 @@ var NappJSJWT = (function (_super) {
                         JWT_SECRET = process.env.JWT_SECRET;
                         JWT_CERTS_URL = process.env.JWT_CERTS_URL;
                         JWT_PUBLIC_CERT = process.env.JWT_PUBLIC_CERT;
-                        if (typeof JWT_SECRET !== "undefined") {
-                            configs.push({ secret: JWT_SECRET, options: { algorhitm: "HS256" } });
+                        if (typeof JWT_SECRET !== 'undefined') {
+                            configs.push({ secret: JWT_SECRET, options: { algorhitm: 'HS256' } });
                         }
-                        if (typeof JWT_PUBLIC_CERT !== "undefined") {
+                        if (typeof JWT_PUBLIC_CERT !== 'undefined') {
                             configs.push({
                                 secret: JWT_PUBLIC_CERT,
-                                options: { algorhitm: "RS256" }
+                                options: { algorhitm: 'RS256' }
                             });
                         }
-                        if (!(typeof JWT_CERTS_URL !== "undefined")) return [3, 3];
+                        if (!(typeof JWT_CERTS_URL !== 'undefined')) return [3, 3];
                         return [4, node_fetch_1.default(JWT_CERTS_URL)];
                     case 1:
                         res = _a.sent();
@@ -199,8 +207,8 @@ var NappJSJWT = (function (_super) {
                         content = _a.sent();
                         configs = configs.concat(content.map(function (cert) {
                             return {
-                                secret: new Buffer(cert.key, "base64"),
-                                options: { algorhitm: "RS256" }
+                                secret: new Buffer(cert.key, 'base64'),
+                                options: { algorhitm: 'RS256' }
                             };
                         }));
                         _a.label = 3;
